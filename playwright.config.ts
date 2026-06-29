@@ -1,5 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
-
+import path from 'path';
 /**
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
@@ -11,6 +11,9 @@ import { defineConfig, devices } from '@playwright/test';
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
+const localFilePath = path.resolve(__dirname, '../EcomPokemon.html'); 
+const isCI = !!process.env.CI;
+
 export default defineConfig({
   testDir: './tests',
   /* Run tests in files in parallel */
@@ -22,12 +25,18 @@ export default defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
+  
   reporter: 'html',
+
+
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('')`. */
-    baseURL: 'file:///C:/Test/PW%20Test/website/',
+    
 
+    baseURL: isCI 
+      ? `file://${localFilePath}`  // Use the local file path in CI
+      : 'file:///C:/Test/PW%20Test/website/', // Or a local file path if needed
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry', // Record video/screenshots on failed attempts
     screenshot: 'only-on-failure', //Screenshot on failed attempts
