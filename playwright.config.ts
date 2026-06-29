@@ -36,7 +36,7 @@ export default defineConfig({
 
     baseURL: isCI 
       ? `file://${localFilePath}`  // Use the local file path in CI
-      : 'file:///C:/Test/PW%20Test/htmlWebsite/', // Or a local file path if needed
+      : 'file:///C:/Test/PW%20Test/htmlWebsite', // Or a local file path if needed
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry', // Record video/screenshots on failed attempts
     screenshot: 'only-on-failure', //Screenshot on failed attempts
