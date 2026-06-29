@@ -11,7 +11,7 @@ import path from 'path';
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
-const localFilePath = path.resolve(__dirname, '../htmlWebsite'); 
+const localFilePath = path.resolve(__dirname, '../'); 
 const isCI = !!process.env.CI;
 
 export default defineConfig({
@@ -36,7 +36,7 @@ export default defineConfig({
 
     baseURL: isCI 
       ? `file://${localFilePath}`  // Use the local file path in CI
-      : 'file:///C:/Test/PW%20Test/htmlWebsite', // Or a local file path if needed
+      : 'file:///C:/Test/PW%20Test/', // Or a local file path if needed
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry', // Record video/screenshots on failed attempts
     screenshot: 'only-on-failure', //Screenshot on failed attempts
