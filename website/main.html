@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automation Test - Main Portal</title>
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg-color: #f9fafb;
+            --card-bg: #ffffff;
+            --text-color: #111827;
+            --text-muted: #6b7280;
+            --border-color: #e5e7eb;
+            --error-color: #ef4444;
+            --sidebar-width: 240px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* Utility Classes */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Login Page Styles */
+        #login-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+        }
+
+        .login-card {
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border: 1px solid var(--border-color);
+        }
+
+        .login-card h2 {
+            margin-bottom: 24px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus {
+            border-color: var(--primary-color);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 10px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-login:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .error-message {
+            color: var(--error-color);
+            font-size: 14px;
+            margin-top: 12px;
+            text-align: center;
+            min-height: 20px;
+        }
+
+        /* Dashboard Layout Styles */
+        #dashboard-container {
+            width: 100%;
+            height: 100vh;
+            display: grid;
+            grid-template-rows: 60px 1fr;
+            grid-template-columns: var(--sidebar-width) 1fr;
+            grid-template-areas: 
+                "header header"
+                "sidebar main";
+        }
+
+        /* Header */
+        header {
+            grid-area: header;
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            z-index: 10;
+        }
+
+        .header-brand {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .username-display {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .btn-logout {
+            padding: 6px 12px;
+            background: transparent;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+
+        .btn-logout:hover {
+            background-color: var(--bg-color);
+        }
+
+        /* Sidebar */
+        aside {
+            grid-area: sidebar;
+            background-color: var(--card-bg);
+            border-right: 1px solid var(--border-color);
+            padding: 24px 16px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .nav-item {
+            display: block;
+            padding: 10px 14px;
+            color: var(--text-muted);
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background-color: #f3f4f6;
+            color: var(--primary-color);
+        }
+
+        /* Main Viewport Content */
+        main {
+            grid-area: main;
+            padding: 0;
+            overflow: hidden;
+            background-color: var(--bg-color);
+        }
+
+        .mains-viewport {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. LOGIN PAGE -->
+    <div id="login-container" data-testid="login-container">
+        <div class="login-card">
+            <h2>Sign In</h2>
+            <form id="login-form" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" data-testid="username-input" placeholder="Enter username" required autocomplete="username" value="admin_user">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" data-testid="password-input" placeholder="Enter password" required autocomplete="current-password" value="SuperSecretPassword1!">
+                </div>
+                <button type="submit" id="login-submit" data-testid="login-button" class="btn-login">Log In</button>
+                <div id="error-display" data-testid="error-message" class="error-message"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 2. DASHBOARD LAYOUT -->
+    <div id="dashboard-container" data-testid="dashboard-container" class="hidden">
+        <!-- Top Header -->
+        <header>
+            <div class="header-brand" data-testid="header-logo">App</div>
+            <div class="user-profile">
+                <span id="user-display" data-testid="username-display" class="username-display"></span>
+                <button id="logout-button" data-testid="logout-button" class="btn-logout" onclick="handleLogout()">Log Out</button>
+            </div>
+        </header>
+
+        <!-- Fixed Sidebar Navigation -->
+        <aside>
+            <nav>
+                <ul class="sidebar-menu">
+                    <li><a class="nav-item active" id="nav-validation" data-testid="nav-validation" onclick="navigateTo('validation')">Forms Validation Lab</a></li>
+                    <li><a class="nav-item" id="nav-dynamic" data-testid="nav-dynamic" onclick="navigateTo('dynamic')">Dynamic</a></li>
+                    <li><a class="nav-item" id="nav-table" data-testid="nav-table" onclick="navigateTo('table')">Table</a></li>
+                    <li><a class="nav-item" id="nav-PopupsNFrames" data-testid="nav-PopupsNFrames" onclick="navigateTo('PopupsNFrames')">PopupsNFrames</a></li>
+                    <li><a class="nav-item" id="nav-DragDropUploadLab" data-testid="nav-DragDropUploadLab" onclick="navigateTo('DragDropUploadLab')">DragDropUploadLab</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area: Now loads pages dynamically via Iframe -->
+        <main id="main-content">
+            <iframe 
+                id="main-frame" 
+                data-testid="main-frame" 
+                src="validation.html" 
+                class="mains-viewport"
+                title="mains Content Viewport"
+            ></iframe>
+        </main>
+    </div>
+
+    <!-- 3. JAVASCRIPT APPLICATION LOGIC -->
+    <script>
+        const testAccounts = {
+            'admin_user': { password: 'SuperSecretPassword1!', role: 'Admin', status: 'active' },
+            'standard_user': { password: 'SecurePassword2@', role: 'Standard', status: 'active' },
+            'locked_user': { password: 'StrongPassword3#', role: 'None', status: 'locked' }
+        };
+
+        const loginContainer = document.getElementById('login-container');
+        const dashboardContainer = document.getElementById('dashboard-container');
+        const loginForm = document.getElementById('login-form');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const errorDisplay = document.getElementById('error-display');
+        const userDisplay = document.getElementById('user-display');
+        const mainsIframe = document.getElementById('main-frame');
+
+        function handleLogin(event) {
+            event.preventDefault();
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value;
+            errorDisplay.textContent = '';
+
+            const account = testAccounts[username];
+
+            if (account && account.password === password) {
+                if (account.status === 'locked') {
+                    errorDisplay.textContent = "Error: This account has been locked.";
+                } else {
+                    userDisplay.textContent = `${username} (${account.role})`;
+                    showDashboard();
+                }
+            } else {
+                errorDisplay.textContent = "Invalid username or password.";
+            }
+        }
+
+        function showDashboard() {
+            loginContainer.classList.add('hidden');
+            bodyResetCenterStyle(false);
+            dashboardContainer.classList.remove('hidden');
+            navigateTo('validation'); 
+        }
+
+        function handleLogout() {
+            loginForm.reset();
+            errorDisplay.textContent = '';
+            dashboardContainer.classList.add('hidden');
+            bodyResetCenterStyle(true);
+            loginContainer.classList.remove('hidden');
+            mainsIframe.src = 'forms.html'; // Reset frame position
+        }
+
+        function bodyResetCenterStyle(shouldCenter) {
+            if (shouldCenter) {
+                document.body.style.display = 'flex';
+                document.body.style.alignItems = 'center';
+                document.body.style.justifyContent = 'center';
+            } else {
+                document.body.style.display = 'block';
+            }
+        }
+
+        // Updated Router Logic mapping to external separate HTML assets
+        function navigateTo(pageId) {
+            // 1. Highlight clicked navigation item
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => item.classList.remove('active'));
+            
+            const targetedNav = document.getElementById(`nav-${pageId}`);
+            if (targetedNav) targetedNav.classList.add('active');
+
+            // 2. Change iframe source target mapping directly
+            if (pageId === 'dashboard') {
+                mainsIframe.src = 'forms.html'; // Loads the independent Form Component file
+            } else {
+                // Future fallback references for remaining workspace layouts
+                mainsIframe.src = `${pageId}.html`; 
+            }
+        }
+    </script>
+</body>
+</html>

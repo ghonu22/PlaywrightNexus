@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Drag, Drop & Upload Lab</title>
+  <style>
+    :root {
+      --bg-color: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --primary: #3b82f6;
+      --success: #22c55e;
+      --success-bg: #f0fdf4;
+      --success-border: #bbf7d0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      padding: 2rem;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      background: var(--card-bg);
+      border-radius: 12px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      padding: 2rem;
+      width: 100%;
+      max-width: 650px;
+      border: 1px solid var(--border-color);
+    }
+
+    h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      color: var(--text-main);
+    }
+
+    .section {
+      margin-bottom: 2.5rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .section:last-of-type {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .section-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 1.25rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Drag & Drop Canvas Layout */
+    .drag-drop-sandbox {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+      justify-content: flex-start;
+      flex-wrap: wrap;
+    }
+
+    .draggable-box {
+      width: 110px;
+      height: 110px;
+      background-color: var(--primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: grab;
+      box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3);
+      user-select: none;
+      transition: transform 0.1s ease;
+    }
+
+    .draggable-box:active {
+      cursor: grabbing;
+      transform: scale(0.95);
+    }
+
+    .drop-zone-box {
+      width: 200px;
+      height: 110px;
+      border: 2px dashed #cbd5e1;
+      background-color: #fafafa;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 500;
+      color: var(--text-muted);
+      border-radius: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .drop-zone-box.drag-over {
+      background-color: #eff6ff;
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .drop-zone-box.dropped {
+      background-color: var(--success-bg);
+      border-color: var(--success);
+      color: var(--success);
+      font-weight: 600;
+      box-shadow: 0 0 0 1px var(--success-border);
+    }
+
+    /* File Upload Controls */
+    .upload-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    input[type="file"] {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    input[type="file"]::file-selector-button {
+      background-color: white;
+      border: 1px solid var(--border-color);
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-weight: 500;
+      color: var(--text-main);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-right: 1rem;
+    }
+
+    input[type="file"]::file-selector-button:hover {
+      background-color: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+
+    .file-status-text {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin: 0;
+      min-height: 1.25rem;
+      font-weight: 500;
+    }
+    
+    .file-status-text.active {
+      color: var(--text-main);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container" data-testid="interactions-container">
+    <h1>Drag, Drop & Upload Lab</h1>
+    
+    <!-- Requirement 3: Drag & Drop Sandbox Section -->
+    <div class="section">
+      <div class="section-title">Drag & Drop Simulation</div>
+      <div class="drag-drop-sandbox">
+        
+        <div 
+          id="dragItem"
+          class="draggable-box" 
+          draggable="true" 
+          data-testid="draggable-item">
+          Drag Me
+        </div>
+
+        <div 
+          id="dropZone"
+          class="drop-zone-box" 
+          data-testid="drop-zone">
+          Drop Here
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Requirement 4: Native File Upload Automation Section -->
+    <div class="section">
+      <div class="section-title">File Input Simulation</div>
+      <div class="upload-group">
+        <input 
+          type="file" 
+          id="fileUploader" 
+          data-testid="file-uploader"
+        >
+        <p 
+          id="fileStatus" 
+          class="file-status-text" 
+          data-testid="uploaded-file-name"
+        ></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- Requirement 3 JS Logic (Drag & Drop Essentials) ---
+    const dragItem = document.getElementById('dragItem');
+    const dropZone = document.getElementById('dropZone');
+
+    dragItem.addEventListener('dragstart', (e) => {
+      e.dataTransfer.setData('text/plain', e.target.id);
+    });
+
+    dropZone.addEventListener('dragover', (e) => {
+      e.preventDefault(); // Essential rule to allow dropping elements
+      if (!dropZone.classList.contains('dropped')) {
+        dropZone.classList.add('drag-over');
+      }
+    });
+
+    dropZone.addEventListener('dragleave', () => {
+      dropZone.classList.remove('drag-over');
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('drag-over');
+      
+      // Update DOM states explicitly for automated checks
+      dropZone.innerText = "Item Dropped!";
+      dropZone.style.backgroundColor = "green"; // inline fallback rule requirement
+      dropZone.classList.add('dropped');
+    });
+
+    // --- Requirement 4 JS Logic (File Upload Extraction) ---
+    const fileUploader = document.getElementById('fileUploader');
+    const fileStatus = document.getElementById('fileStatus');
+
+    fileUploader.addEventListener('change', (e) => {
+      const files = e.target.files;
+      if (files && files.length > 0) {
+        fileStatus.classList.add('active');
+        fileStatus.innerText = `Uploaded: ${files[0].name}`;
+      } else {
+        fileStatus.classList.remove('active');
+        fileStatus.innerText = "";
+      }
+    });
+  </script>
+</body>
+</html>

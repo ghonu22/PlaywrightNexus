@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data Table Lab</title>
+  <style>
+    :root {
+      --bg-color: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --danger: #ef4444;
+      --danger-hover: #dc2626;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      padding: 2rem;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      background: var(--card-bg);
+      border-radius: 12px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      padding: 2rem;
+      width: 100%;
+      max-width: 800px;
+      border: 1px solid var(--border-color);
+    }
+
+    h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      color: var(--text-main);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      margin-bottom: 1.5rem;
+    }
+
+    th {
+      background-color: #f1f5f9;
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+      padding: 0.75rem 1rem;
+      border-bottom: 2px solid var(--border-color);
+    }
+
+    td {
+      padding: 1rem;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 0.95rem;
+    }
+
+    tr:hover td {
+      background-color: #f8fafc;
+    }
+
+    .badge {
+      display: inline-flex;
+      padding: 0.25rem 0.5rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      background-color: #dbeafe;
+      color: #1e40af;
+    }
+
+    .btn {
+      font-size: 0.875rem;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      border: 1px solid transparent;
+    }
+
+    .btn-danger {
+      background-color: var(--danger);
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background-color: var(--danger-hover);
+    }
+
+    .pagination-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .pagination-info {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+
+    .btn-nav {
+      background-color: white;
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+    }
+
+    .btn-nav:hover:not(:disabled) {
+      background-color: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+
+    .btn-nav.active {
+      background-color: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container" data-testid="table-container">
+    <h1 data-testid="table-heading">Data Table Lab</h1>
+    
+    <table data-testid="user-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Role</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="table-body">
+        <tr data-testid="table-row-1">
+          <td>1</td>
+          <td>John Doe</td>
+          <td><span class="badge">Admin</span></td>
+          <td>
+            <button class="btn btn-danger" data-testid="delete-btn-1" onclick="deleteRow(this)">Delete</button>
+          </td>
+        </tr>
+        <tr data-testid="table-row-2">
+          <td>2</td>
+          <td>Jane Smith</td>
+          <td><span class="badge">Editor</span></td>
+          <td>
+            <button class="btn btn-danger" data-testid="delete-btn-2" onclick="deleteRow(this)">Delete</button>
+          </td>
+        </tr>
+        <tr data-testid="table-row-3">
+          <td>3</td>
+          <td>Alex Jones</td>
+          <td><span class="badge">Viewer</span></td>
+          <td>
+            <button class="btn btn-danger" data-testid="delete-btn-3" onclick="deleteRow(this)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="pagination-container" data-testid="pagination-controls">
+      <span class="pagination-info" data-testid="pagination-info">Showing page <span id="current-page">1</span> of 5</span>
+      <div>
+        <button class="btn btn-nav" data-testid="btn-prev" onclick="togglePagination(this)">Previous</button>
+        <button class="btn btn-nav" data-testid="btn-next" onclick="togglePagination(this)">Next</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Feature 4: Immediate DOM deletion on row click
+    function deleteRow(button) {
+      const row = button.closest('tr');
+      if (row) {
+        row.remove();
+      }
+    }
+
+    // Feature 5: Functional Active State Toggles for Pagination Testing
+    function togglePagination(button) {
+      const currentPageElement = document.getElementById('current-page');
+      let currentPage = parseInt(currentPageElement.innerText, 10);
+      
+      // Toggle CSS class state for simple selection validation in Playwright
+      document.querySelectorAll('.btn-nav').forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+
+      // Shift dynamic text/states to verify content modifications
+      if (button.getAttribute('data-testid') === 'btn-next' && currentPage < 5) {
+        currentPage++;
+      } else if (button.getAttribute('data-testid') === 'btn-prev' && currentPage > 1) {
+        currentPage--;
+      }
+      
+      currentPageElement.innerText = currentPage;
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Popups & Frames Lab</title>
+  <style>
+    :root {
+      --bg-color: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --overlay-bg: rgba(15, 23, 42, 0.6);
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      padding: 2rem;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      background: var(--card-bg);
+      border-radius: 12px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      padding: 2rem;
+      width: 100%;
+      max-width: 650px;
+      border: 1px solid var(--border-color);
+    }
+
+    h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      color: var(--text-main);
+    }
+
+    .section {
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .section:last-of-type {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .section-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .btn {
+      font-size: 0.9rem;
+      padding: 0.625rem 1.25rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      border: 1px solid var(--border-color);
+      background-color: white;
+      color: var(--text-main);
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .btn-primary:hover {
+      background-color: var(--primary-hover);
+    }
+
+    .btn:hover:not(.btn-primary) {
+      background-color: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+
+    /* Modal Backdrop Overlay */
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: var(--overlay-bg);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+      backdrop-filter: blur(4px);
+    }
+
+    /* Custom Modal Box */
+    .modal-content {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+      border: 1px solid var(--border-color);
+    }
+
+    .modal-content h3 {
+      margin-top: 0;
+      font-size: 1.25rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .modal-content p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Embedded Iframe Styling */
+    iframe {
+      width: 100%;
+      height: 150px;
+      border: 2px dashed #cbd5e1;
+      border-radius: 8px;
+      background: #fafafa;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container" data-testid="overlays-container">
+    <h1 data-testid="table-heading">Popups & Frames Lab</h1>
+    
+    <!-- Native JavaScript Dialog Section -->
+    <div class="section">
+      <div class="section-title">Native Dialogs</div>
+      <div class="btn-group">
+        <button class="btn" data-testid="btn-native-alert" onclick="triggerNativeAlert()">Trigger Alert</button>
+      </div>
+    </div>
+
+    <!-- Custom HTML Modal Section -->
+    <div class="section">
+      <div class="section-title">Custom DOM Overlays</div>
+      <div class="btn-group">
+        <button class="btn btn-primary" data-testid="btn-open-modal" onclick="openModal()">Open Modal</button>
+      </div>
+    </div>
+
+    <!-- Embedded Iframe Section -->
+    <div class="section">
+      <div class="section-title">Context Switching (Frames)</div>
+      <iframe 
+        data-testid="embedded-iframe" 
+        id="target-iframe"
+        srcdoc="
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <style>
+              body { 
+                font-family: system-ui; 
+                padding: 1rem; 
+                margin: 0; 
+                background: #f1f5f9;
+                display: flex;
+                flex-direction: column;
+                gap: 0.5rem;
+              }
+              label { font-size: 0.85rem; font-weight: 600; color: #475569; }
+              input { 
+                padding: 0.5rem; 
+                border: 1px solid #cbd5e1; 
+                border-radius: 4px; 
+                font-size: 0.9rem;
+                width: calc(100% - 1.25rem);
+              }
+              input:focus { outline: 2px solid #3b82f6; }
+            </style>
+          </head>
+          <body>
+            <label for='iframe-input'>Inside Frame Input:</label>
+            <input type='text' id='iframe-input' data-testid='iframe-input' placeholder='Type something here...'>
+          </body>
+          </html>
+        ">
+      </iframe>
+    </div>
+  </div>
+
+  <!-- Custom HTML Modal Template -->
+  <div class="modal-backdrop" id="customModalOverlay" data-testid="custom-modal">
+    <div class="modal-content">
+      <h3>Playwright Custom Modal</h3>
+      <p>This UI simulation uses absolute DOM positioning. Excellent for testing element visibility and interaction assertions!</p>
+      <button class="btn" data-testid="btn-close-modal" onclick="closeModal()">Close Modal</button>
+    </div>
+  </div>
+
+  <script>
+    // Requirement 3: Native Window Alert Trigger
+    function triggerNativeAlert() {
+      window.alert("Hello from Playwright Automation!");
+    }
+
+    // Requirement 4: Custom Modal Controls
+    const modal = document.getElementById('customModalOverlay');
+
+    function openModal() {
+      modal.style.display = 'flex';
+    }
+
+    function closeModal() {
+      modal.style.display = 'none';
+    }
+
+    // Optional: Close modal if background backdrop is clicked
+    window.onclick = function(event) {
+      if (event.target === modal) {
+        closeModal();
+      }
+    }
+  </script>
+</body>
+</html>

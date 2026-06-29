@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Form Validation Lab</title>
+    <!-- CSS automatically loads here from the component snippet -->
+	    <style>
+        .forms-section-wrapper {
+            max-width: 480px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 32px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e7eb;
+        }
+
+        .forms-section-wrapper h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 24px;
+        }
+
+        .lab-form .form-group {
+            margin-bottom: 20px;
+        }
+
+        .lab-form label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #4b5563;
+        }
+
+        .lab-form input[type="text"],
+        .lab-form input[type="email"],
+        .lab-form select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+            background-color: #fff;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .lab-form input:focus,
+        .lab-form select:focus {
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .lab-form .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 4px;
+        }
+
+        .lab-form input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: #4f46e5;
+            cursor: pointer;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 12px;
+            background-color: #4f46e5;
+            color: #ffffff;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-submit:hover:not(:disabled) {
+            background-color: #4338ca;
+        }
+
+        .btn-submit:disabled {
+            background-color: #d1d5db;
+            color: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .lab-success-toast {
+            margin-top: 16px;
+            padding: 12px;
+            background-color: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            color: #065f46;
+            border-radius: 6px;
+            font-size: 14px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .hidden-element {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+<div class="forms-section-wrapper" data-testid="forms-container">
+
+
+    <h1>Form Validation Lab</h1>
+    
+    <form id="lab-validation-form" class="lab-form" onsubmit="handleLabSubmit(event)">
+        <!-- Name Input -->
+        <div class="form-group">
+            <label for="lab-name">Full Name</label>
+            <input type="text" id="lab-name" data-testid="input-name" placeholder="John Doe" required>
+        </div>
+
+        <!-- Email Input -->
+        <div class="form-group">
+            <label for="lab-email">Email Address</label>
+            <input type="email" id="lab-email" data-testid="input-email" placeholder="john@example.com" required>
+        </div>
+
+        <!-- Role Select -->
+        <div class="form-group">
+            <label for="lab-role">Account Role</label>
+            <select id="lab-role" data-testid="select-role">
+                <option value="Admin">Admin</option>
+                <option value="User">User</option>
+                <option value="Guest">Guest</option>
+            </select>
+        </div>
+
+        <!-- Subscription Checkbox -->
+        <div class="form-group checkbox-group">
+            <input type="checkbox" id="lab-subscribe" data-testid="checkbox-subscribe">
+            <label for="lab-subscribe">Subscribe to newsletter updates</label>
+        </div>
+
+        <!-- Submit Action Button -->
+        <button type="submit" id="lab-submit-btn" data-testid="button-submit" class="btn-submit" disabled>
+            Submit Form
+        </button>
+
+        <!-- Async Dynamic Banner Messaging -->
+        <div id="lab-success-banner" data-testid="success-message" class="lab-success-toast hidden-element">
+            Form submitted successfully!
+        </div>
+    </form>
+
+
+</div>
+</body>
+    <script>
+        (function() {
+            const form = document.getElementById('lab-validation-form');
+            const nameInput = document.getElementById('lab-name');
+            const emailInput = document.getElementById('lab-email');
+            const submitBtn = document.getElementById('lab-submit-btn');
+            const successBanner = document.getElementById('lab-success-banner');
+
+            // RFC 5322 Standard Email validation regex match check
+            const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+            function validateFormState() {
+                const isNameValid = nameInput.value.trim().length > 0;
+                const isEmailValid = emailRegex.test(emailInput.value.trim());
+
+                // Enable button only when structural validity condition rules match
+                if (isNameValid && isEmailValid) {
+                    submitBtn.removeAttribute('disabled');
+                } else {
+                    submitBtn.setAttribute('disabled', 'true');
+                }
+            }
+
+            // Bind input field update state tracking hooks
+            nameInput.addEventListener('input', validateFormState);
+            emailInput.addEventListener('input', validateFormState);
+
+            // Handle network asynchronous resolution processing simulation logic
+            window.handleLabSubmit = function(event) {
+                event.preventDefault();
+                
+                // Minimize element layout alteration flash during active requests
+                submitBtn.setAttribute('disabled', 'true');
+                successBanner.classList.add('hidden-element');
+
+                // Simulate exact 1-second dynamic microservice delay target 
+                setTimeout(() => {
+                    successBanner.classList.remove('hidden-element');
+                    form.reset();
+                    validateFormState(); // Restore safe dynamic UI boundaries back to standard base state
+                }, 1000);
+            };
+        })();
+    </script>
+</html>

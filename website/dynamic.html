@@ -1,0 +1,133 @@
+<!-- 
+  Dynamic UI & Loading Lab Component
+  Designed for Playwright/Automation Testing Sandbox 
+-->
+<div class="dynamic-section-wrapper" data-testid="dynamic-container">
+    <style>
+        .dynamic-section-wrapper {
+            max-width: 480px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 32px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e7eb;
+            text-align: center;
+        }
+
+        .dynamic-section-wrapper h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 24px;
+        }
+
+        .btn-fetch {
+            padding: 12px 24px;
+            background-color: #4f46e5;
+            color: #ffffff;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-fetch:hover:not(:disabled) {
+            background-color: #4338ca;
+        }
+
+        .btn-fetch:disabled {
+            background-color: #d1d5db;
+            color: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        /* Loading Spinner Elements */
+        .spinner-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin: 20px 0;
+            color: #4b5563;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid #e5e7eb;
+            border-top-color: #4f46e5;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Success Target Layout Data Card */
+        .data-card {
+            margin-top: 16px;
+            padding: 24px;
+            background-color: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 8px;
+            color: #166534;
+            font-size: 16px;
+            font-weight: 600;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        .hidden-element {
+            display: none !important;
+        }
+    </style>
+
+    <h1>Dynamic Loading Lab</h1>
+
+    <!-- Trigger Button -->
+    <button id="fetch-trigger" data-testid="button-fetch" class="btn-fetch" onclick="triggerAsyncLoad()">
+        Fetch Data
+    </button>
+
+    <!-- Loading State Viewport Element -->
+    <div id="loading-view" data-testid="loading-spinner" class="spinner-container hidden-element">
+        <div class="spinner"></div>
+        <span>Loading data from server...</span>
+    </div>
+
+    <!-- Asynchronous Resolved Target Container -->
+    <div id="resolved-card" data-testid="loaded-data-card" class="data-card hidden-element">
+        Async Data Loaded Successfully!
+    </div>
+
+    <script>
+        function triggerAsyncLoad() {
+            const fetchBtn = document.getElementById('fetch-trigger');
+            const loadingView = document.getElementById('loading-view');
+            const resolvedCard = document.getElementById('resolved-card');
+
+            // 1. Enter Loading State Phase
+            fetchBtn.disabled = true;
+            fetchBtn.classList.add('hidden-element');
+            loadingView.classList.remove('hidden-element');
+            resolvedCard.classList.add('hidden-element');
+
+            // 2. Set strict deterministic wait execution timer loop bounds
+            setTimeout(() => {
+                // 3. Complete network request simulation phase
+                loadingView.classList.add('hidden-element');
+                resolvedCard.classList.remove('hidden-element');
+            }, 3500); // 3.5 seconds required execution path window
+        }
+    </script>
+</div>
