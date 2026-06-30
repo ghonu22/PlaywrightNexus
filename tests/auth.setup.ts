@@ -17,7 +17,7 @@ const authenticate = async (page: Page, username: string) => {
 };
 
 setup.beforeEach(async ({ page }) => {
-    await page.goto('website/main.html');
+    await page.goto('');
 });
 
 setup('Authenticate as Admin', async ({ page }) => {

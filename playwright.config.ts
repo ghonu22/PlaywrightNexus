@@ -11,7 +11,7 @@ import path from 'path';
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
-const localFilePath = path.resolve(__dirname, '../website/'); 
+const localFilePath = path.resolve(__dirname, '../PlaywrightNexus/website/main.html'); // Adjust the path to your local file
 const isCI = !!process.env.CI;
 
 export default defineConfig({
